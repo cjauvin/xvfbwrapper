@@ -17,10 +17,11 @@ import time
 
 class Xvfb:
 
-    def __init__(self, width=800, height=680, colordepth=24, **kwargs):
+    def __init__(self, width=800, height=680, colordepth=24, display=None, **kwargs):
         self.width = width
         self.height = height
         self.colordepth = colordepth
+        self.new_display = display
 
         if not self.xvfb_exists():
             msg = 'Can not find Xvfb. Please install it and try again.'
@@ -50,7 +51,8 @@ class Xvfb:
         self.stop()
 
     def start(self):
-        self.new_display = self._get_next_unused_display()
+        if self.new_display is None:
+            self.new_display = self._get_next_unused_display()
         display_var = ':{}'.format(self.new_display)
         self.xvfb_cmd = ['Xvfb', display_var] + self.extra_xvfb_args
         with open(os.devnull, 'w') as fnull:
